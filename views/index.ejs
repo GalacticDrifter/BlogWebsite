@@ -1,0 +1,260 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">    
+    
+  <title>Lucie Coats</title>
+  <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+
+   <link href='https://fonts.googleapis.com/css?family=Francois+One' rel='stylesheet' >
+    <link href="stylesheets/style.css" rel="stylesheet" type='text/css'>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.1.0.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
+    
+    <script src="javascripts/angularApp.js"></script>
+    
+    
+  <style> .glyphicon-thumbs-up { cursor:pointer } </style>
+   
+</head>
+<body ng-app="blogApp">
+   
+   <nav class="navbar navbar-default" ng-controller="NavCtrl" role="navigation">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+
+        <button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Lucie Coats!</a>
+      </div>
+    
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
+      
+        <ul class="nav navbar-nav">
+          <li><a href="#/home">About Me</a></li>
+          <li><a href="#/greatPage">Great Page</a></li>
+          <li><a href="#/blog">Blog</a></li>
+          
+          <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">I'm not working!
+        <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Page 1-1</a></li>
+          <li><a href="#">Page 1-2</a></li>
+          <li><a href="#">Page 1-3</a></li> 
+        </ul>
+      </li>
+          
+        </ul>
+        
+      </div><!-- /.navbar-collapse -->
+    </nav>
+
+<!--
+  <nav class="navbar navbar-default" ng-controller="NavCtrl">
+    <div class="navbar-header">
+          <a class="navbar-brand" href="#/home">Home</a>
+          <a class="navbar-brand" href="#/blog">Blog</a>
+      
+    <ul class="nav navbar-nav">
+      <li><a href="#/home">Home</a></li>
+      <li><a href="#/blog">Blog</a></li>
+      <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
+      <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
+      <li ng-hide="isLoggedIn()"><a href="/#/login">Log In</a></li>
+      <li ng-hide="isLoggedIn()"><a href="/#/register">Register</a></li>
+    </ul>
+        </div>
+  </nav>-->
+  
+   <!--<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <ui-view></ui-view>
+    </div>
+  </div>-->
+    
+    <div class="container">
+<ui-view></ui-view>
+    
+  <script type="text/ng-template" id="/home.html">
+	  <div class="page-header">
+	    <h1>Home page</h1>
+        <h3>Some great home page stuff</h3>
+        <p>Home page content of some kind?</p>
+	  </div>
+	
+	  <div ng-show="error" class="alert alert-danger row">
+	    <span>{{ error.message }}</span>
+	  </div>
+	
+  </script>    
+        
+   <script type="text/ng-template" id="/greatPage.html">
+	  <div class="page-header">
+	    <h1>Some other great page</h1>
+	  </div>
+	
+	  <div ng-show="error" class="alert alert-danger row">
+	    <span>{{ error.message }}</span>
+	  </div>
+	
+  </script>
+    
+  <script type="text/ng-template" id="/blog.html">
+    <div class="page-header">
+      <h1>Lucie's Blog</h1>
+    </div>
+
+    <div ng-repeat="post in posts | orderBy: '-upvotes'">
+      <span class="glyphicon glyphicon-thumbs-up" ng-click="upvote(post)"></span>
+        {{post.upvotes}}
+      <span class="glyphicon glyphicon-thumbs-down" ng-click="downvote(post)"></span>
+      <span style="font-size:20px;margin-left:10px">
+        <a ng-show="post.link" href="{{post.link}}">
+          {{post.title}}
+        </a>
+        <span ng-hide="post.link">
+          {{post.title}}
+        </span>
+		<span ng-show="post.author">
+		  posted by <a>{{post.author}}</a> |
+		</span>      
+	 </span>
+      <span>
+        <a href="#/posts/{{post._id}}">Comments</a>
+          ({{post.comments.length}})
+      </span>
+        <br>
+        {{post.postBody}}
+        <hr>
+    </div>
+
+    <form ng-submit="addPost()" ng-show="isLoggedIn()" style="margin-top:30px">
+      <h3>Add a new post:</h3>
+
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Title"  ng-model="title">
+      </div>
+        
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Title Link (to somewhere on your website)" ng-model="link">
+      </div>
+            
+      <div class="form-group">
+        <!--<input type="text" class="form-control" placeholder="Type out the body of your post here..."  ng-model="postBody">-->
+          <textarea type="text" class="form-control" rows="3" cols="35" ng-model="postBody">Type out the body of your post here...</textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Post</button>
+    </form>
+	<div ng-hide="isLoggedIn()">
+	  <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add a post.</h3>
+	</div>
+  </script>
+
+  <script type="text/ng-template" id="/posts.html">
+    <div class="page-header">
+      <h3>
+        <a ng-show="post.link" href="{{post.link}}">
+          {{post.title}}
+        </a>
+        <span ng-hide="post.link">
+          {{post.title}}
+        </span>
+      </h3>
+        <span>{{post.postBody}}</span>
+        
+    </div>
+
+    <div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
+      <span class="glyphicon glyphicon-thumbs-up" ng-click="upvote(comment)"></span>
+        {{comment.upvotes}} 
+      <span class="glyphicon glyphicon-thumbs-down" ng-click="downvote(comment)"></span>
+        - by {{comment.author}}
+      <span style="font-size:20px; margin-left:10px;">
+        {{comment.body}}
+      </span>
+    </div>
+
+    <form ng-submit="addComment()" ng-show="isLoggedIn()" style="margin-top:30px;">
+      <h3>Add a new comment</h3>
+
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Comment" ng-model="body"></input>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Post</button>
+    </form>
+    <div ng-hide="isLoggedIn()">
+	  <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can comment.</h3>
+	</div>
+  </script>
+  
+  <script type="text/ng-template" id="/register.html">
+	  <div class="page-header">
+	    <h1>Lucie's Website</h1>
+	  </div>
+	
+	  <div ng-show="error" class="alert alert-danger row">
+	    <span>{{ error.message }}</span>
+	  </div>
+	
+	  <form ng-submit="register()"
+	    style="margin-top:30px;">
+	    <h3>Register</h3>
+	
+	    <div class="form-group">
+	      <input type="text"
+	      class="form-control"
+	      placeholder="Username"
+	      ng-model="user.username"></input>
+	    </div>
+	    <div class="form-group">
+	      <input type="password"
+	      class="form-control"
+	      placeholder="Password"
+	      ng-model="user.password"></input>
+	    </div>
+	    <button type="submit" class="btn btn-primary">Register</button>
+	  </form>
+	</script>
+
+
+	<script type="text/ng-template" id="/login.html">
+	  <div class="page-header">
+	    <h1>Lucie's Blog</h1>
+	  </div>
+	
+	  <div ng-show="error" class="alert alert-danger row">
+	    <span>{{ error.message }}</span>
+	  </div>
+	
+	  <form ng-submit="logIn()"
+	    style="margin-top:30px;">
+	    <h3>Log In</h3>
+	
+	    <div class="form-group">
+	      <input type="text"
+	      class="form-control"
+	      placeholder="Username"
+	      ng-model="user.username"></input>
+	    </div>
+	    <div class="form-group">
+	      <input type="password"
+	      class="form-control"
+	      placeholder="Password"
+	      ng-model="user.password"></input>
+	    </div>
+	    <button type="submit" class="btn btn-primary">Log In</button>
+	  </form>
+  </script>					  
+  </div>
+  </body>
+</html>
